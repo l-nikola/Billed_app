@@ -20,6 +20,7 @@ const row = (bill) => {
 };
 
 const rows = (data) => {
+  // Fix : [Bug report] - Bills
   // Sort the data by date in descending order
   if (!Array.isArray(data)) return "";
   data = data.sort((a, b) => new Date(b.date) - new Date(a.date));

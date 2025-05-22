@@ -26,6 +26,8 @@ export default class NewBill {
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
 
+    // Fix : [Bug Hunt] - Bills
+    // Check if the file is a valid image type
     if (file) {
       const fileExtension = fileName.split(".").pop();
       const validExtensions = ["jpg", "jpeg", "png"];

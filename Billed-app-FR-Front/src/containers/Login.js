@@ -50,6 +50,8 @@ export default class Login {
     e.preventDefault();
     const user = {
       type: "Admin",
+      // Fix : [Bug report] - Login
+      // Use correct data-testid for email and password inputs
       email: e.target.querySelector(`input[data-testid="admin-email-input"]`)
         .value,
       password: e.target.querySelector(
