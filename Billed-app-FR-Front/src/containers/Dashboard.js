@@ -154,10 +154,23 @@ export default class {
       this.counter++;
     }
 
+    // Before fix : [Bug Hunt] - Dashboard
+    // bills.forEach((bill) => {
+    //   $(`#open-bill${bill.id}`).click((e) =>
+    //     this.handleEditTicket(e, bill, bills)
+    //   );
+    // });
+
+    // Fix : [Bug Hunt] - Dashboard
+    // Fix: handlers per list
+    // console.log(`#status-bills-container${this.index}`);
     bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).click((e) =>
-        this.handleEditTicket(e, bill, bills)
-      );
+      const selector = `#status-bills-container${this.index} #open-bill${bill.id}`;
+      const exists = $(selector).length > 0;
+      // console.log(`Ticket ${bill.id} : ${exists}`);
+      if (exists) {
+        $(selector).click((e) => this.handleEditTicket(e, bill, bills));
+      }
     });
 
     return bills;
