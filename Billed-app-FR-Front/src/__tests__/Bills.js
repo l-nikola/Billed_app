@@ -45,5 +45,29 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono);
       expect(dates).toEqual(datesSorted);
     });
+
+    // 2. [Ajout de tests unitaires et d'intégration]
+    // Test that the new bill modal opens
+    test("Then I click on the newBill button", () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+      window.onNavigate(ROUTES_PATH.Bills);
+      const newBillButton = screen.getByTestId("btn-new-bill");
+      expect(newBillButton).toBeTruthy();
+      newBillButton.click();
+      const newBillModal = screen.getByTestId("form-new-bill");
+      expect(newBillModal).toBeTruthy();
+    });
   });
 });
