@@ -6,9 +6,8 @@ import { screen, fireEvent } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 
-import NewBillUI from "../views/NewBillUI";
 import NewBill from "../containers/NewBill.js";
-import { ROUTES, ROUTES_PATH } from "../constants/routes";
+import { ROUTES_PATH } from "../constants/routes";
 import { localStorageMock } from "../__mocks__/localStorage";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router";
@@ -50,10 +49,11 @@ describe("Given I am connected as an employee", () => {
           email: "a@a",
         })
       );
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
-      document.body.innerHTML = NewBillUI();
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.appendChild(root);
+      router();
+      window.onNavigate(ROUTES_PATH.NewBill);
 
       const initBill = new NewBill({
         document,
@@ -80,12 +80,9 @@ describe("Given I am connected as an employee", () => {
       );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
-      document.body.append(root);
+      document.body.appendChild(root);
       router();
       window.onNavigate(ROUTES_PATH.NewBill);
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
       const initBill = new NewBill({
         document,
         onNavigate,
@@ -178,7 +175,10 @@ describe("When I navigate to employee page", () => {
 
         // Submit form
         const form = screen.getByTestId("form-new-bill");
-        form.addEventListener("submit", jest.fn((e) => newBill.handleSubmit(e)));
+        form.addEventListener(
+          "submit",
+          jest.fn((e) => newBill.handleSubmit(e))
+        );
 
         fireEvent.submit(form);
         await new Promise(process.nextTick);
@@ -217,7 +217,10 @@ describe("When I navigate to employee page", () => {
 
         // Submit form
         const form = screen.getByTestId("form-new-bill");
-        form.addEventListener("submit", jest.fn((e) => newBill.handleSubmit(e)));
+        form.addEventListener(
+          "submit",
+          jest.fn((e) => newBill.handleSubmit(e))
+        );
 
         fireEvent.submit(form);
         await new Promise(process.nextTick);
