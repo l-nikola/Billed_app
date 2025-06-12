@@ -114,89 +114,50 @@ describe("When I navigate to employee page", () => {
       expect(postBills).toStrictEqual(bill);
     });
 
+    const errorTest = async (errorMessage) => {
+      window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
+
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.appendChild(root);
+      router();
+      window.onNavigate(ROUTES_PATH.NewBill);
+
+      const postSpy = jest.spyOn(console, "error");
+
+      const store = {
+        bills: jest.fn(() => newBill.store),
+        create: jest.fn(() => Promise.resolve({})),
+        update: jest.fn(() => Promise.reject(new Error(errorMessage))),
+      };
+
+      const newBill = new NewBill({
+        document,
+        onNavigate,
+        store,
+        localStorage,
+      });
+      newBill.isImgFormatValid = true;
+
+      // Submit form
+      const form = screen.getByTestId("form-new-bill");
+      form.addEventListener(
+        "submit",
+        jest.fn((e) => newBill.handleSubmit(e))
+      );
+
+      fireEvent.submit(form);
+      await new Promise(process.nextTick);
+      expect(postSpy).toBeCalledWith(new Error(errorMessage));
+    };
+
     describe("When an error occurs on API", () => {
       test("Add bill from an API and fail with a 404 error", async () => {
-        window.localStorage.setItem(
-          "user",
-          JSON.stringify({
-            type: "Employee",
-          })
-        );
-
-        const root = document.createElement("div");
-        root.setAttribute("id", "root");
-        document.body.appendChild(root);
-        router();
-        window.onNavigate(ROUTES_PATH.NewBill);
-
-        const postSpy = jest.spyOn(console, "error");
-
-        const store = {
-          bills: jest.fn(() => newBill.store),
-          create: jest.fn(() => Promise.resolve({})),
-          update: jest.fn(() => Promise.reject(new Error("404"))),
-        };
-
-        const newBill = new NewBill({
-          document,
-          onNavigate,
-          store,
-          localStorage,
-        });
-        newBill.isImgFormatValid = true;
-
-        // Submit form
-        const form = screen.getByTestId("form-new-bill");
-        form.addEventListener(
-          "submit",
-          jest.fn((e) => newBill.handleSubmit(e))
-        );
-
-        fireEvent.submit(form);
-        await new Promise(process.nextTick);
-        expect(postSpy).toBeCalledWith(new Error("404"));
+        await errorTest("404");
       });
 
       test("Add bill from an API and fail with a 500 error", async () => {
-        window.localStorage.setItem(
-          "user",
-          JSON.stringify({
-            type: "Employee",
-          })
-        );
-
-        const root = document.createElement("div");
-        root.setAttribute("id", "root");
-        document.body.appendChild(root);
-        router();
-        window.onNavigate(ROUTES_PATH.NewBill);
-
-        const postSpy = jest.spyOn(console, "error");
-
-        const store = {
-          bills: jest.fn(() => newBill.store),
-          create: jest.fn(() => Promise.resolve({})),
-          update: jest.fn(() => Promise.reject(new Error("500"))),
-        };
-
-        const newBill = new NewBill({
-          document,
-          onNavigate,
-          store,
-          localStorage,
-        });
-        newBill.isImgFormatValid = true;
-
-        // Submit form
-        const form = screen.getByTestId("form-new-bill");
-        form.addEventListener(
-          "submit",
-          jest.fn((e) => newBill.handleSubmit(e))
-        );
-
-        fireEvent.submit(form);
-        await new Promise(process.nextTick);
-        expect(postSpy).toBeCalledWith(new Error("500"));
+        await errorTest("500");
       });
     });
   });
