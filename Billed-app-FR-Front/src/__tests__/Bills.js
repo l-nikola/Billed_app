@@ -39,6 +39,8 @@ describe("Given I am connected as an employee", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
       await waitFor(() => screen.getByTestId("icon-window"));
       const windowIcon = screen.getByTestId("icon-window");
+      // 1. [Ajout de tests unitaires et d'intégration]
+      // Check if the icon is highlighted
       expect(windowIcon.classList.contains("active-icon")).toBeTruthy();
     });
 
@@ -54,6 +56,8 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
 
+    // 2. [Ajout de tests unitaires et d'intégration]
+    // Test that the new bill modal opens
     test("Then I click on the newBill button", () => {
       const newBillButton = screen.getByTestId("btn-new-bill");
       expect(newBillButton).toBeTruthy();
@@ -62,6 +66,7 @@ describe("Given I am connected as an employee", () => {
       expect(newBillModal).toBeTruthy();
     });
 
+    // Test that the eye icon opens a modal with the bill
     test("Then I click on the eye icon, a modal should open", async () => {
       new Bills({
         document,
