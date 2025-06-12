@@ -89,8 +89,8 @@ describe("Given I am connected as an employee", () => {
 });
 
 // test d'intégration POST
-describe("When I navigate to employee page", () => {
-  describe("Given I am connected as an employee and I create new bill", () => {
+describe("Given I navigate to employee page", () => {
+  describe("When I am connected as an employee and I create new bill", () => {
     test("Then employee create new bill", async () => {
       const postSpy = jest.spyOn(mockStore, "bills");
       const bill = {
@@ -152,11 +152,11 @@ describe("When I navigate to employee page", () => {
     };
 
     describe("When an error occurs on API", () => {
-      test("Add bill from an API and fail with a 404 error", async () => {
+      test("Then add bill from an API and fail with a 404 error", async () => {
         await errorTest("404");
       });
 
-      test("Add bill from an API and fail with a 500 error", async () => {
+      test("Then add bill from an API and fail with a 500 error", async () => {
         await errorTest("500");
       });
     });
