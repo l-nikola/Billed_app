@@ -16,7 +16,7 @@ jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
-    test("Then bill icon in vertical layout should be highlighted", async () => {
+    beforeEach(() => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -26,11 +26,17 @@ describe("Given I am connected as an employee", () => {
           type: "Employee",
         })
       );
+
       const root = document.createElement("div");
       root.setAttribute("id", "root");
-      document.body.append(root);
+      document.body.innerHTML = "";
+      document.body.appendChild(root);
+
       router();
       window.onNavigate(ROUTES_PATH.Bills);
+    });
+
+    test("Then bill icon in vertical layout should be highlighted", async () => {
       await waitFor(() => screen.getByTestId("icon-window"));
       const windowIcon = screen.getByTestId("icon-window");
       // 1. [Ajout de tests unitaires et d'intégration]
@@ -53,20 +59,6 @@ describe("Given I am connected as an employee", () => {
     // 2. [Ajout de tests unitaires et d'intégration]
     // Test that the new bill modal opens
     test("Then I click on the newBill button", () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.append(root);
-      router();
-      window.onNavigate(ROUTES_PATH.Bills);
       const newBillButton = screen.getByTestId("btn-new-bill");
       expect(newBillButton).toBeTruthy();
       newBillButton.click();
@@ -76,20 +68,6 @@ describe("Given I am connected as an employee", () => {
 
     // Test that the eye icon opens a modal with the bill
     test("Then I click on the eye icon, a modal should open", async () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-        })
-      );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.append(root);
-      router();
-      window.onNavigate(ROUTES_PATH.Bills);
       new Bills({
         document,
         onNavigate,

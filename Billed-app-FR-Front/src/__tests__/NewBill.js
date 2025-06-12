@@ -15,23 +15,22 @@ import router from "../app/Router";
 jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
+  beforeEach(() => {
+    Object.defineProperty(window, "localStorage", { value: localStorageMock });
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({ type: "Employee", email: "a@a" })
+    );
+    document.body.innerHTML = "";
+    const root = document.createElement("div");
+    root.setAttribute("id", "root");
+    document.body.append(root);
+    router();
+    window.onNavigate(ROUTES_PATH.NewBill);
+  });
+
   describe("When I am on NewBill Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-          email: "a@a",
-        })
-      );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.append(root);
-      router();
-      window.onNavigate(ROUTES_PATH.NewBill);
       const windowIcon = screen.getByTestId("icon-mail");
       expect(windowIcon.classList.contains("active-icon")).toBeTruthy();
     });
@@ -39,22 +38,6 @@ describe("Given I am connected as an employee", () => {
 
   describe("When I submit a new Bill", () => {
     test("Then the bill is saved", async () => {
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-          email: "a@a",
-        })
-      );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.appendChild(root);
-      router();
-      window.onNavigate(ROUTES_PATH.NewBill);
-
       const initBill = new NewBill({
         document,
         onNavigate,
@@ -71,17 +54,6 @@ describe("Given I am connected as an employee", () => {
 
     test("Then the bill of the file is correct and incorrect", async () => {
       global.alert = jest.fn(); // Simulate alert
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-          email: "a@a",
-        })
-      );
-      const root = document.createElement("div");
-      root.setAttribute("id", "root");
-      document.body.appendChild(root);
-      router();
       window.onNavigate(ROUTES_PATH.NewBill);
       const initBill = new NewBill({
         document,
