@@ -37,6 +37,11 @@ describe("Given I am connected as an employee", () => {
   });
 
   describe("When I submit a new Bill", () => {
+    beforeEach(() => {
+      global.alert = jest.fn(); // Simulate alert
+      window.onNavigate(ROUTES_PATH.NewBill);
+    });
+
     test("Then the bill is saved", async () => {
       const initBill = new NewBill({
         document,
@@ -52,9 +57,7 @@ describe("Given I am connected as an employee", () => {
       expect(handleSubmit).toHaveBeenCalled();
     });
 
-    test("Then the bill of the file is correct and incorrect", async () => {
-      global.alert = jest.fn(); // Simulate alert
-      window.onNavigate(ROUTES_PATH.NewBill);
+    test("Then the bill of the file is correct", async () => {
       const initBill = new NewBill({
         document,
         onNavigate,
@@ -65,14 +68,6 @@ describe("Given I am connected as an employee", () => {
       const handleChangeFile = jest.fn((e) => initBill.handleChangeFile(e));
       const formNewBill = screen.getByTestId("form-new-bill");
       const billFile = screen.getByTestId("file");
-      const badFile = new File(["text"], "badfile.pdf", {
-        type: "application/pdf",
-      });
-
-      userEvent.upload(billFile, badFile);
-      expect(global.alert).toHaveBeenCalledWith(
-        "Type de fichier non valide. Veuillez déposer un fichier JPG, JPEG ou PNG."
-      );
 
       billFile.addEventListener("change", handleChangeFile);
       userEvent.upload(billFile, file);
@@ -84,6 +79,18 @@ describe("Given I am connected as an employee", () => {
       formNewBill.addEventListener("submit", handleSubmit);
       fireEvent.submit(formNewBill);
       expect(handleSubmit).toHaveBeenCalled();
+    });
+
+    test("Then the bill of the file is incorrect", async () => {
+      const billFile = screen.getByTestId("file");
+      const badFile = new File(["text"], "badfile.pdf", {
+        type: "application/pdf",
+      });
+
+      userEvent.upload(billFile, badFile);
+      expect(global.alert).toHaveBeenCalledWith(
+        "Type de fichier non valide. Veuillez déposer un fichier JPG, JPEG ou PNG."
+      );
     });
   });
 });
